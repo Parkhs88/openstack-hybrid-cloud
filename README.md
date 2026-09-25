@@ -1,9 +1,12 @@
-# DR 캡디 프로젝트 
+# TrustNet - Hybrid Cloud DR & Network Monitoring
 
-## 파일 구조 및 실제 배포 경로
+온프레미스 네트워크와 AWS를 연동하여 네트워크 및 서비스 상태를 모니터링하고, 장애 발생 시 AWS DR 환경으로 전환하도록 구성한 프로젝트입니다.
 
 ---
 
+## 파일 구조 및 실제 배포 경로
+
+```text
 dr_capstone/
 │
 ├── scripts/                          → VLAN56 모니터링 VM에 배포
@@ -31,8 +34,8 @@ dr_capstone/
 │
 ├── docs/                             → 프로젝트 문서 및 결과 이미지
 │   ├── architecture.png              → 전체 아키텍처
-│   ├── dashboard.png                 → 모니터링 대시보드 결과
-│   └── setup.md                      → 상세 구축 및 설정 과정
+│   ├── dashboard.png                 → 모니터링 대시보드 결과        
+│   └── images                                  
 │
 └── react-ui/                         → VLAN56 모니터링 VM ~/dr-monitoring/
     ├── index.html                    → ~/dr-monitoring/index.html
@@ -41,7 +44,9 @@ dr_capstone/
     └── src/
         ├── main.jsx                  → ~/dr-monitoring/src/main.jsx
         ├── App.jsx                   → ~/dr-monitoring/src/App.jsx
-        └── App.css                   → ~/dr-monitoring/src/App.css
+        └── App.css                   → ~/dr-monitoring/src/App.css            → ~/dr-monitoring/src/App.css
+```
+
 ---
 
 ## Network Configuration
