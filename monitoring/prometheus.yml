@@ -1,0 +1,73 @@
+global:
+  scrape_interval: 15s
+
+# =============================================================================
+# [파일 위치] ~/monitoring/prometheus.yml
+# [역할] Blackbox Exporter를 통해 각 서비스 상태 수집
+# =============================================================================
+
+scrape_configs:
+
+  # DS SW1 ping 체크
+  - job_name: 'ds_sw1_ping'
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    static_configs:
+      - targets:
+          - 192.168.99.11
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9115
+
+  # DS SW2 ping 체크
+  - job_name: 'ds_sw2_ping'
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    static_configs:
+      - targets:
+          - 192.168.99.12
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9115
+
+  # Wiki.js HTTP 체크
+  - job_name: 'wikijs_http'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://192.168.20.20
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9115
+
+  # PostgreSQL TCP 체크
+  - job_name: 'postgresql_tcp'
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+    static_configs:
+      - targets:
+          - 192.168.30.30:5432
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9115

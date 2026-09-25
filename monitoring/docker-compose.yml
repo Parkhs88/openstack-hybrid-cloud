@@ -1,0 +1,28 @@
+version: '3.8'
+
+# =============================================================================
+# [파일 위치] ~/monitoring/docker-compose.yml
+# [역할] Prometheus + Blackbox Exporter 컨테이너 실행
+# [실행] docker compose up -d
+# =============================================================================
+
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    restart: always
+
+  blackbox:
+    image: prom/blackbox-exporter
+    container_name: blackbox
+    ports:
+      - "9115:9115"
+    restart: always
+
+volumes:
+  prometheus-data:
