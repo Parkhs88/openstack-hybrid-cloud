@@ -4,9 +4,6 @@
 
 ---
 
-## 파일 구조 및 실제 배포 경로
-
-```text
 dr_capstone/
 │
 ├── scripts/                          → VLAN56 모니터링 VM에 배포
@@ -32,6 +29,11 @@ dr_capstone/
 │   ├── bb-sw1.cfg
 │   └── bb-sw2.cfg
 │
+├── docs/                             → 프로젝트 문서 및 결과 이미지
+│   ├── architecture.png              → 전체 아키텍처
+│   ├── dashboard.png                 → 모니터링 대시보드 결과
+│   └── setup.md                      → 상세 구축 및 설정 과정
+│
 └── react-ui/                         → VLAN56 모니터링 VM ~/dr-monitoring/
     ├── index.html                    → ~/dr-monitoring/index.html
     ├── vite.config.js                → ~/dr-monitoring/vite.config.js
@@ -40,8 +42,6 @@ dr_capstone/
         ├── main.jsx                  → ~/dr-monitoring/src/main.jsx
         ├── App.jsx                   → ~/dr-monitoring/src/App.jsx
         └── App.css                   → ~/dr-monitoring/src/App.css
-```
-
 ---
 
 ## Network Configuration
