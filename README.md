@@ -20,7 +20,7 @@
 ## Network Topology
 
 <p align="center">
-  <img src="./docs/images/network-topology.png" width="600">
+  <img src="./docs/images/network-topology.png" width="500">
 </p>
 
 - Backbone / Distribution / Access 계층으로 네트워크 구성
