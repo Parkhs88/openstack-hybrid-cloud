@@ -55,12 +55,13 @@ openstack-hybrid-cloud/
 │   └── dnsmasq/
 │       └── internal.conf              → 내부 DNS 및 DR 전환 설정
 │
-├── docs/                              → 프로젝트 아키텍처 및 결과 자료
-│   ├── architecture.png               → 전체 시스템 아키텍처
-│   ├── network-topology.png           → 네트워크 토폴로지
-│   ├── dashboard.png                  → 모니터링 대시보드 결과
-│   └── documents/
-          └── 구현과정_자료.pdf         → 프로젝트 주차별 정리 문서
+├── docs/                              → 프로젝트 이미지 및 문서
+│     ├── images/                             
+│     │    ├── architecture.png               → 전체 시스템 아키텍처
+│     │    ├── network-topology.png           → 네트워크 토폴로지
+│     │     └── dashboard.png                 → 모니터링 대시보드 결과
+│     └── documents/
+│          └── 구현과정_자료.pdf         → 프로젝트 주차별 정리 문서
 │
 ├── log-api/                           → 장애 로그 및 DNS 상태 조회 API
 │   └── server.js
