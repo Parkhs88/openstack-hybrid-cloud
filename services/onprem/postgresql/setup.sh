@@ -30,10 +30,10 @@ PG_HBA="/etc/postgresql/$PG_VERSION/main/pg_hba.conf"
 sudo sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" "$PG_CONF"
 
 # VLAN20 (Wiki.js) 접속 허용
-echo "host    wiki    wikijs    192.168.20.0/24    md5" | sudo tee -a "$PG_HBA"
+echo "host wiki wikijs 192.168.20.0/24 md5" | sudo tee -a "$PG_HBA"
 
 # 모니터링 서버 접속 허용
-echo "host    all     all       192.168.99.0/24    md5" | sudo tee -a "$PG_HBA"
+echo "host all all 192.168.99.0/24 md5" | sudo tee -a "$PG_HBA"
 
 sudo systemctl restart postgresql
 
