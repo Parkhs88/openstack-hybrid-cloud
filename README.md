@@ -6,7 +6,7 @@
 
 ## Architecture
 <p align="center">
-  <img src="./docs/images/architecture.png" width="550">
+  <img src="./docs/images/architecture.png" width="650">
 </p>
 
 - **Network** : VLAN 10(User) / VLAN 20(Web) / VLAN 30(DB) / VLAN 56(Monitoring)
