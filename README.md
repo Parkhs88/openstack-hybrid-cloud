@@ -5,7 +5,6 @@
 ---
 
 ## Architecture
-
 <p align="center">
   <img src="./docs/images/architecture.png" width="550">
 </p>
