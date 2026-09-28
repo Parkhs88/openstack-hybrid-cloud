@@ -352,7 +352,7 @@ On-Premise Wiki.js
 ## 구현 및 검증 결과
 
 <p align="center">
-  <img src="./docs/images/dashboard.png" width="700">
+  <img src="./docs/images/dashboard.png">
 </p>
 
 - 네트워크 장비 ICMP 상태 모니터링
