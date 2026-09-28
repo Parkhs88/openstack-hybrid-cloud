@@ -35,54 +35,69 @@
 ## 파일 구조 및 실제 배포 경로
 
 ```text id="2yodte"
-dr_capstone/
+openstack-hybrid-cloud/
 │
-├── scripts/                          → VLAN56 모니터링 VM에 배포
-│   ├── check_onprem_status.sh        → /usr/local/bin/check_onprem_status.sh
-│   ├── change_dns_to_aws.sh          → /usr/local/bin/change_dns_to_aws.sh
-│   └── change_dns_to_onprem.sh       → /usr/local/bin/change_dns_to_onprem.sh
-│
-├── monitoring/                       → VLAN56 모니터링 VM ~/monitoring/
-│   ├── docker-compose.yml            → ~/monitoring/docker-compose.yml
-│   └── prometheus.yml                → ~/monitoring/prometheus.yml
-│
-├── log-api/                          → VLAN56 모니터링 VM ~/log-api/
-│   └── server.js                     → ~/log-api/server.js
-│
-├── config/
+├── config/                            → 서비스 동작에 필요한 설정 파일
 │   └── dnsmasq/
-│       └── internal.conf             → /etc/dnsmasq.d/internal.conf
+│       └── internal.conf              → 내부 DNS 및 DR 전환 설정
 │
-├── network-configs/                  → 네트워크 장비 설정
+├── docs/                              → 프로젝트 아키텍처 및 결과 자료
+│   ├── architecture.png               → 전체 시스템 아키텍처
+│   ├── dashboard.png                  → 모니터링 대시보드 결과
+│   └── images/                        → README 및 프로젝트 설명 이미지
+│
+├── log-api/                           → 장애 로그 및 DNS 상태 조회 API
+│   └── server.js
+│
+├── monitoring/                        → 네트워크·서비스 상태 모니터링 구성
+│   ├── docker-compose.yml             → Prometheus / Blackbox Exporter 실행
+│   └── prometheus.yml                 → 모니터링 대상 및 수집 설정
+│
+├── network-configs/                   → 네트워크 장비별 설정 파일
 │   ├── README.md
-│   │
-│   ├── backbone/
+│   ├── backbone/                      → Backbone Switch 설정
 │   │   ├── BB_SW1.cfg
 │   │   └── BB_SW2.cfg
-│   │
-│   ├── distribution/
+│   ├── distribution/                  → Distribution Switch 설정
 │   │   ├── DS_SW1.cfg
 │   │   └── DS_SW2.cfg
-│   │
-│   └── access/
+│   └── access/                        → Access Switch 설정
 │       ├── AS_SW1.cfg
 │       └── AS_SW2.cfg
 │
-├── docs/                             → 프로젝트 문서 및 결과 이미지
-│   ├── architecture.png              → 전체 아키텍처
-│   ├── dashboard.png                 → 모니터링 대시보드 결과
-│   └── images/
+├── react-ui/                          → 네트워크·서비스 모니터링 웹 대시보드
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── package.json
+│   └── src/
+│       ├── main.jsx
+│       ├── App.jsx
+│       └── App.css
 │
-└── react-ui/                         → VLAN56 모니터링 VM ~/dr-monitoring/
-    ├── index.html                    → ~/dr-monitoring/index.html
-    ├── vite.config.js                → ~/dr-monitoring/vite.config.js
-    ├── package.json                  → ~/dr-monitoring/package.json
-    └── src/
-        ├── main.jsx                  → ~/dr-monitoring/src/main.jsx
-        ├── App.jsx                   → ~/dr-monitoring/src/App.jsx
-        └── App.css                   → ~/dr-monitoring/src/App.css
-```
-
+├── scripts/                           → 장애 감지 및 DR 자동 전환 스크립트
+│   ├── check_onprem_status.sh         → 온프레미스 서비스 상태 확인
+│   ├── change_dns_to_aws.sh           → 장애 발생 시 AWS로 DNS 전환
+│   └── change_dns_to_onprem.sh        → 복구 후 온프레미스로 DNS 원복
+│
+├── services/                          → On-Premise / AWS 서비스 구축 스크립트
+│   ├── onprem/
+│   │   ├── wikijs/
+│   │   │   └── setup.sh              → 온프레미스 Wiki.js 환경 구성
+│   │   └── postgresql/
+│   │       └── setup.sh              → 온프레미스 PostgreSQL 환경 구성
+│   └── aws/
+│       ├── wikijs/
+│       │   └── setup.sh              → AWS Wiki.js 환경 및 RDS 연결 구성
+│       └── rds/
+│           └── setup.sh              → AWS RDS PostgreSQL 구성
+│
+├── wireguard/                         → On-Premise ↔ AWS VPN 구성
+│   ├── onprem/
+│   │   └── setup.sh                  → 온프레미스 WireGuard 설정
+│   └── aws/
+│       └── setup.sh                  → AWS EC2 WireGuard 설정
+│
+└── README.md                          → 프로젝트 전체 설명
 ---
 
 ## Network Configuration
