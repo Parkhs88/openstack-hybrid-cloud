@@ -1,11 +1,5 @@
 version: '3.8'
 
-# =============================================================================
-# [파일 위치] ~/monitoring/docker-compose.yml
-# [역할] Prometheus + Blackbox Exporter 컨테이너 실행
-# [실행] docker compose up -d
-# =============================================================================
-
 services:
   prometheus:
     image: prom/prometheus
