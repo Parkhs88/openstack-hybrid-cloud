@@ -59,7 +59,7 @@ openstack-hybrid-cloud/
 │     ├── images/                             
 │     │    ├── architecture.png               → 전체 시스템 아키텍처
 │     │    ├── network-topology.png           → 네트워크 토폴로지
-│     │     └── dashboard.png                 → 모니터링 대시보드 결과
+│     │    └── dashboard.png                 → 모니터링 대시보드 결과
 │     └── documents/
 │          └── 구현과정_자료.pdf         → 프로젝트 주차별 정리 문서
 │
