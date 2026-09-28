@@ -11,10 +11,24 @@
 </p>
 
 - **Network** : VLAN 10(User) / VLAN 20(Web) / VLAN 30(DB) / VLAN 56(Monitoring)
-- **Redundancy** : HSRP · OSPF/ECMP · Rapid-PVST
+- **Redundancy** : HSRP · Static Routing / ECMP · Rapid-PVST
 - **Hybrid Cloud** : WireGuard VPN을 통한 On-Premise ↔ AWS 연결
 - **DR** : 서비스 장애 감지 시 DNS를 AWS Wiki.js로 자동 전환
 - **Monitoring** : ICMP · HTTP · TCP 기반 네트워크 및 서비스 상태 확인
+
+---
+
+## Network Topology
+
+<p align="center">
+  <img src="./docs/network-topology.png" width="700">
+</p>
+
+- Backbone / Distribution / Access 계층으로 네트워크 구성
+- VLAN 10(User), VLAN 20(Web), VLAN 30(DB), VLAN 56(Monitoring)으로 네트워크 분리
+- HSRP와 Rapid-PVST를 이용한 게이트웨이 및 L2 경로 이중화
+- Floating Static Route와 ECMP를 이용한 네트워크 경로 이중화
+- 사용자망에서 DB 서버로의 직접 접근을 ACL을 통해 제한
 
 ---
 
@@ -32,9 +46,9 @@
 
 ---
 
-## 파일 구조 및 실제 배포 경로
+## Repository Structure
 
-```text id="2yodte"
+```text
 openstack-hybrid-cloud/
 │
 ├── config/                            → 서비스 동작에 필요한 설정 파일
@@ -43,6 +57,7 @@ openstack-hybrid-cloud/
 │
 ├── docs/                              → 프로젝트 아키텍처 및 결과 자료
 │   ├── architecture.png               → 전체 시스템 아키텍처
+│   ├── network-topology.png           → 네트워크 토폴로지
 │   ├── dashboard.png                  → 모니터링 대시보드 결과
 │   └── images/                        → README 및 프로젝트 설명 이미지
 │
@@ -98,6 +113,8 @@ openstack-hybrid-cloud/
 │       └── setup.sh                  → AWS EC2 WireGuard 설정
 │
 └── README.md                          → 프로젝트 전체 설명
+```
+
 ---
 
 ## Network Configuration
@@ -109,14 +126,13 @@ openstack-hybrid-cloud/
 - Virtual Gateway : 각 VLAN `.254`
 - 게이트웨이 이중화를 통해 Active 장비 장애 시 Standby 장비로 전환
 
-### OSPF / ECMP
+### Routing / ECMP
 
-*실제 장비에서는 OSPF 미지원으로 Static Routing을 사용하고, Floating Static Route와 ECMP를 적용하여 경로를 이중화했습니다.*
-
-- Backbone–Distribution 구간 OSPF 기반 동적 라우팅 구성
-- 동일 Cost 경로를 이용한 ECMP 구성
-- VLAN 네트워크를 OSPF에 광고하고 VLAN 인터페이스는 Passive Interface로 설정
-- 네트워크 경로 장애 발생 시 OSPF 재계산을 통한 우회 경로 전환 확인
+- OSPF 기반 동적 라우팅 구조를 설계하고 Packet Tracer에서 구성 및 검증
+- 실제 장비에서는 OSPF 미지원으로 Static Routing을 사용
+- Floating Static Route와 ECMP를 적용하여 경로 이중화
+- 네트워크 경로 장애 발생 시 대체 경로를 통한 통신 확인
+- Packet Tracer의 OSPF 구성에서는 VLAN 인터페이스를 Passive Interface로 설정
 
 ### Rapid-PVST
 
@@ -144,6 +160,7 @@ openstack-hybrid-cloud/
 ### Device Configuration
 
 네트워크 장비의 세부 설정은 [`network-configs/`](https://github.com/Parkhs88/openstack-hybrid-cloud/tree/main/network-configs)에서 확인할 수 있습니다.
+
 > `.cfg` 파일은 OSPF 기반 네트워크 구성을 Packet Tracer에서 구현하고 검증한 설정입니다. 실제 장비에서는 OSPF를 지원하지 않아 Static Routing 기반으로 구성했습니다.
 
 #### Backbone
@@ -160,6 +177,7 @@ openstack-hybrid-cloud/
 
 - [AS_SW1 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/access/AS_SW1.cfg)
 - [AS_SW2 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/access/AS_SW2.cfg)
+
 ---
 
 ## 환경 정보
@@ -172,15 +190,17 @@ openstack-hybrid-cloud/
 | DS_SW1 | 192.168.60.1 |
 | DS_SW2 | 192.168.60.2 |
 | AWS Wiki.js | 172.31.32.43 |
+| WireGuard On-Premise | 10.200.0.1 |
+| WireGuard AWS | 10.200.0.2 |
 | 내부 도메인 | service.local |
 
 ---
 
-## 설치 순서 (VLAN56 VM 기준)
+## 모니터링 환경 구성 (VLAN56 VM)
 
 ### 1. 스크립트 배포
 
-```bash id="doh4ft"
+```bash
 sudo cp scripts/check_onprem_status.sh /usr/local/bin/
 sudo cp scripts/change_dns_to_aws.sh /usr/local/bin/
 sudo cp scripts/change_dns_to_onprem.sh /usr/local/bin/
@@ -192,7 +212,7 @@ sudo chmod +x /usr/local/bin/change_dns_to_onprem.sh
 
 ### 2. dnsmasq 설정
 
-```bash id="mv56qs"
+```bash
 sudo apt install -y dnsmasq
 sudo cp config/dnsmasq/internal.conf /etc/dnsmasq.d/
 
@@ -204,7 +224,7 @@ sudo systemctl restart dnsmasq
 
 ### 3. 로그 파일 권한 설정
 
-```bash id="09emcg"
+```bash
 sudo touch /var/log/dr_check.log
 sudo chmod 666 /var/log/dr_check.log
 ```
@@ -213,7 +233,7 @@ sudo chmod 666 /var/log/dr_check.log
 
 약 30초 간격으로 온프레미스 상태 확인 스크립트를 실행합니다.
 
-```bash id="r9i01h"
+```bash
 crontab -e
 
 # 아래 두 줄 추가
@@ -223,7 +243,7 @@ crontab -e
 
 ### 5. Prometheus + Blackbox Exporter 실행
 
-```bash id="b4agj1"
+```bash
 mkdir -p ~/monitoring
 cp monitoring/docker-compose.yml ~/monitoring/
 cp monitoring/prometheus.yml ~/monitoring/
@@ -234,7 +254,7 @@ docker compose up -d
 
 ### 6. Node.js 로그 API 실행
 
-```bash id="17dqf3"
+```bash
 mkdir -p ~/log-api
 cp log-api/server.js ~/log-api/
 
@@ -244,7 +264,7 @@ nohup node server.js &
 
 ### 7. React 대시보드 실행
 
-```bash id="6phmve"
+```bash
 mkdir -p ~/dr-monitoring
 cp -r react-ui/* ~/dr-monitoring/
 
@@ -257,7 +277,7 @@ npm run dev
 
 ## 동작 흐름
 
-```text id="vczuj6"
+```text
 상태 확인 스크립트 (약 30초 간격)
  └→ check_onprem_status.sh
       ├→ DS_SW1 / DS_SW2 ICMP 상태 확인
@@ -290,7 +310,7 @@ React Dashboard (Port 5173)
 
 ## DR 동작
 
-```text id="t7wj0g"
+```text
 [정상 상태]
 
 User
@@ -327,14 +347,18 @@ On-Premise Wiki.js
 
 ---
 
-## 구현 결과
+## 구현 및 검증 결과
 
-![Monitoring Dashboard](./docs/dashboard.png)
+<p align="center">
+  <img src="./docs/dashboard.png" width="700">
+</p>
 
 - 네트워크 장비 ICMP 상태 모니터링
 - Wiki.js HTTP 상태 모니터링
 - PostgreSQL TCP 상태 모니터링
 - 장애 발생 및 복구 이벤트 로그 확인
 - 현재 On-Premise / AWS DNS 전환 상태 확인
-- 장애 발생 시 AWS DR 환경으로 서비스 전환
-- 온프레미스 복구 확인 후 기존 서비스 환경으로 자동 원복
+- 장애 발생 시 AWS DR 환경으로 서비스 자동 전환
+- 온프레미스 서비스 복구 확인 후 기존 환경으로 자동 원복
+- WireGuard를 통한 On-Premise ↔ AWS 구간 통신 확인
+- 네트워크 경로 및 게이트웨이 장애 상황에서 이중화 동작 확인
