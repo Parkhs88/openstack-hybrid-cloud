@@ -133,18 +133,18 @@ dr_capstone/
 
 #### Backbone
 
-- [BB_SW1 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs%20/%20backbone/BB_SW1.cfg)
-- [BB_SW2 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs%20/%20backbone/BB_SW2.cfg)
+- [BB_SW1 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/backbone/BB_SW1.cfg)
+- [BB_SW2 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/backbone/BB_SW2.cfg)
 
 #### Distribution
 
-- [DS_SW1 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs%20/%20distribution/DS_SW1.cfg)
-- [DS_SW2 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs%20/%20distribution/DS_SW2.cfg)
+- [DS_SW1 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/distribution/DS_SW1.cfg)
+- [DS_SW2 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/distribution/DS_SW2.cfg)
 
 #### Access
 
-- [AS_SW1 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs%20/%20access/AS_SW1.cfg)
-- [AS_SW2 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs%20/%20access/AS_SW2.cfg)
+- [AS_SW1 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/access/AS_SW1.cfg)
+- [AS_SW2 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/access/AS_SW2.cfg)
 ---
 
 ## 환경 정보
