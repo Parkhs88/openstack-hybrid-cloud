@@ -6,7 +6,7 @@
 
 ## Architecture
 <p align="center">
-  <img src="./docs/images/architecture.png" width="450">
+  <img src="./docs/images/architecture.png" width="500">
 </p>
 
 - **Network** : VLAN 10(User) / VLAN 20(Web) / VLAN 30(DB) / VLAN 56(Monitoring)
@@ -20,7 +20,7 @@
 ## Network Topology
 
 <p align="center">
-  <img src="./docs/images/network-topology.png" width="500">
+  <img src="./docs/images/network-topology.png" width="600">
 </p>
 
 - Backbone / Distribution / Access 계층으로 네트워크 구성
