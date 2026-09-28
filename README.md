@@ -92,10 +92,10 @@ dr_capstone/
 
 > 장비 설정 파일은 프로젝트 당시 구성한 네트워크를 기반으로 정리한 설정입니다.
 
-- [DS SW1 Configuration](./network-configs/ds-sw1.cfg)
-- [DS SW2 Configuration](./network-configs/ds-sw2.cfg)
-- [BB SW1 Configuration](./network-configs/bb-sw1.cfg)
-- [BB SW2 Configuration](./network-configs/bb-sw2.cfg)
+- [DS SW1 Configuration](./network-configs/DS_SW1.cfg)
+- [DS SW2 Configuration](./network-configs/DS_SW2.cfg)
+- [BB SW1 Configuration](./network-configs/BB_SW1.cfg)
+- [BB SW2 Configuration](./network-configs/BB_SW2.cfg)
 
 ---
 
