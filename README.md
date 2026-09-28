@@ -7,14 +7,14 @@
 ## Architecture
 
 <p align="center">
-  <img src="./docs/architecture.png" width="500">
+  <img src="./docs/architecture.png" width="550">
 </p>
 
-- User / Web / DB / Monitoring 영역을 VLAN으로 분리
-- HSRP, OSPF, Rapid-PVST를 이용한 네트워크 이중화 구성
-- WireGuard VPN을 통한 온프레미스 ↔ AWS 네트워크 연결
-- 온프레미스 서비스 장애 감지 시 DNS를 AWS DR 환경으로 전환
-- Prometheus + Blackbox Exporter를 이용한 네트워크 및 서비스 상태 모니터링
+- **Network** : VLAN 10(User) / VLAN 20(Web) / VLAN 30(DB) / VLAN 56(Monitoring)
+- **Redundancy** : HSRP · OSPF/ECMP · Rapid-PVST
+- **Hybrid Cloud** : WireGuard VPN을 통한 On-Premise ↔ AWS 연결
+- **DR** : 서비스 장애 감지 시 DNS를 AWS Wiki.js로 자동 전환
+- **Monitoring** : ICMP · HTTP · TCP 기반 네트워크 및 서비스 상태 확인
 
 ---
 
