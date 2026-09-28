@@ -1,5 +1,5 @@
 #!/bin/bash
-# AWS RDS PostgreSQL DR 설정 가이드
+# AWS RDS PostgreSQL DR 설정 
 # 용도: On-Prem PostgreSQL 장애 시 DR 전환 대상
 # 연결: Wiki.js EC2 (172.31.32.43) → RDS
 
