@@ -17,7 +17,7 @@ cat /etc/wireguard/publickey
 # ========== 3. wg0 인터페이스 설정 ==========
 sudo cat > /etc/wireguard/wg0.conf <<EOF
 [Interface]
-Address = 10.0.0.1/24
+Address = 10.200.0.1/24
 ListenPort = 51820
 PrivateKey = $(cat /etc/wireguard/privatekey)
 
@@ -32,7 +32,7 @@ PostDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 [Peer]
 PublicKey = <AWS_EC2_PUBLIC_KEY>
 Endpoint = <AWS_EC2_PUBLIC_IP>:51820
-AllowedIPs = 10.0.0.2/32, 172.31.32.0/24
+AllowedIPs = 10.200.0.2/32, 172.31.32.0/24
 PersistentKeepalive = 25
 EOF
 
@@ -43,4 +43,4 @@ sudo systemctl start wg-quick@wg0
 # ========== 5. 연결 확인 ==========
 sudo wg show
 echo "[확인] AWS EC2로 ping 테스트"
-ping -c 3 10.0.0.2
+ping -c 3 10.200.0.2
