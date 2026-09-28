@@ -59,7 +59,8 @@ openstack-hybrid-cloud/
 │   ├── architecture.png               → 전체 시스템 아키텍처
 │   ├── network-topology.png           → 네트워크 토폴로지
 │   ├── dashboard.png                  → 모니터링 대시보드 결과
-│   └── images/                        → README 및 프로젝트 설명 이미지
+│   └── documents/
+          └── 구현과정_자료.pdf         → 프로젝트 주차별 정리 문서
 │
 ├── log-api/                           → 장애 로그 및 DNS 상태 조회 API
 │   └── server.js
@@ -362,3 +363,9 @@ On-Premise Wiki.js
 - 온프레미스 서비스 복구 확인 후 기존 환경으로 자동 원복
 - WireGuard를 통한 On-Premise ↔ AWS 구간 통신 확인
 - 네트워크 경로 및 게이트웨이 장애 상황에서 이중화 동작 확인
+
+ ## 한계점 및 개선 방향
+
+- AWS에 모니터링 서버를 구축하려 했으나 연동 문제로 VLAN56에 구성
+- 온프레미스 전체 장애 시 모니터링 서버도 함께 영향을 받을 수 있음
+- 추후 모니터링 서버를 AWS로 분리하여 외부에서 장애를 감지하도록 개선
