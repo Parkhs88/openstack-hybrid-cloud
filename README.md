@@ -128,13 +128,13 @@ dr_capstone/
 
 ### Device Configuration
 
-네트워크 장비의 세부 설정은 [`network-configs/`](https://github.com/Parkhs88/openstack-hybrid-cloud/tree/main/network-configs%20)에서 확인할 수 있습니다.
+네트워크 장비의 세부 설정은 [`network-configs/`](https://github.com/Parkhs88/openstack-hybrid-cloud/tree/main/network-configs)에서 확인할 수 있습니다.
 > `.cfg` 파일은 OSPF 기반 네트워크 구성을 Packet Tracer에서 구현하고 검증한 설정입니다. 실제 장비에서는 OSPF를 지원하지 않아 Static Routing 기반으로 구성했습니다.
 
 #### Backbone
 
-- [BB_SW1 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/backbone/BB_SW1.cfg)
-- [BB_SW2 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/backbone/BB_SW2.cfg)
+- [BB_SW1 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/%20backbone/BB_SW1.cfg)
+- [BB_SW2 Configuration](https://github.com/Parkhs88/openstack-hybrid-cloud/blob/main/network-configs/%20backbone/BB_SW2.cfg)
 
 #### Distribution
 
