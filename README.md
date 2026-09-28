@@ -7,7 +7,7 @@
 ## Architecture
 
 <p align="center">
-  <img src="./docs/architecture.png" width="550">
+  <img src="./docs/images/architecture.png" width="550">
 </p>
 
 - **Network** : VLAN 10(User) / VLAN 20(Web) / VLAN 30(DB) / VLAN 56(Monitoring)
@@ -21,7 +21,7 @@
 ## Network Topology
 
 <p align="center">
-  <img src="./docs/network-topology.png" width="700">
+  <img src="./docs/images/network-topology.png" width="700">
 </p>
 
 - Backbone / Distribution / Access 계층으로 네트워크 구성
@@ -352,7 +352,7 @@ On-Premise Wiki.js
 ## 구현 및 검증 결과
 
 <p align="center">
-  <img src="./docs/dashboard.png" width="700">
+  <img src="./docs/images/dashboard.png" width="700">
 </p>
 
 - 네트워크 장비 ICMP 상태 모니터링
