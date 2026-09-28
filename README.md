@@ -1,12 +1,38 @@
 # TrustNet - Hybrid Cloud DR & Network Monitoring
 
-온프레미스 네트워크와 AWS를 연동하여 네트워크 및 서비스 상태를 모니터링하고, 장애 발생 시 AWS DR 환경으로 전환하도록 구성한 프로젝트입니다.
+온프레미스 네트워크와 AWS를 연결하여 서비스 장애 발생 시 자동으로 AWS DR 환경으로 전환하는 하이브리드 클라우드 인프라 프로젝트입니다.
+
+---
+
+## Architecture
+
+![Architecture](./docs/architecture.png)
+
+- User / Web / DB / Monitoring 영역을 VLAN으로 분리
+- HSRP, OSPF, Rapid-PVST를 이용한 네트워크 이중화 구성
+- WireGuard VPN을 통한 온프레미스 ↔ AWS 네트워크 연결
+- 온프레미스 서비스 장애 감지 시 DNS를 AWS DR 환경으로 전환
+- Prometheus + Blackbox Exporter를 이용한 네트워크 및 서비스 상태 모니터링
+
+---
+
+## Network Equipment
+
+프로젝트에서는 Cisco Catalyst L3/L2 스위치를 이용해 실제 네트워크 환경을 구성했습니다.
+
+| 장비 | 모델 | 역할 |
+|---|---|---|
+| BB_SW1 | Cisco Catalyst 3065X | Backbone L3 Switch |
+| BB_SW2 | Cisco Catalyst 3065X | Backbone L3 Switch |
+| DS_SW1 | Cisco Catalyst 3065 | Distribution L3 Switch |
+| DS_SW2 | Cisco Catalyst 3065G | Distribution L3 Switch |
+| AS_SW | Cisco Catalyst 2950 | Access L2 Switch |
 
 ---
 
 ## 파일 구조 및 실제 배포 경로
 
-```text
+```text id="2yodte"
 dr_capstone/
 │
 ├── scripts/                          → VLAN56 모니터링 VM에 배포
@@ -27,15 +53,23 @@ dr_capstone/
 │
 ├── network-configs/                  → 네트워크 장비 설정
 │   ├── README.md
-│   ├── ds-sw1.cfg
-│   ├── ds-sw2.cfg
-│   ├── bb-sw1.cfg
-│   └── bb-sw2.cfg
+│   │
+│   ├── backbone/
+│   │   ├── BB_SW1.cfg
+│   │   └── BB_SW2.cfg
+│   │
+│   ├── distribution/
+│   │   ├── DS_SW1.cfg
+│   │   └── DS_SW2.cfg
+│   │
+│   └── access/
+│       ├── AS_SW1.cfg
+│       └── AS_SW2.cfg
 │
 ├── docs/                             → 프로젝트 문서 및 결과 이미지
 │   ├── architecture.png              → 전체 아키텍처
-│   ├── dashboard.png                 → 모니터링 대시보드 결과        
-│   └── images                                  
+│   ├── dashboard.png                 → 모니터링 대시보드 결과
+│   └── images/
 │
 └── react-ui/                         → VLAN56 모니터링 VM ~/dr-monitoring/
     ├── index.html                    → ~/dr-monitoring/index.html
@@ -44,7 +78,7 @@ dr_capstone/
     └── src/
         ├── main.jsx                  → ~/dr-monitoring/src/main.jsx
         ├── App.jsx                   → ~/dr-monitoring/src/App.jsx
-        └── App.css                   → ~/dr-monitoring/src/App.css            → ~/dr-monitoring/src/App.css
+        └── App.css                   → ~/dr-monitoring/src/App.css
 ```
 
 ---
@@ -53,23 +87,26 @@ dr_capstone/
 
 ### HSRP
 
-- VLAN 10 : DS SW2 Active
-- VLAN 20/30 : DS SW6 Active
+- VLAN 10 : DS_SW1 Active
+- VLAN 20/30 : DS_SW2 Active
 - Virtual Gateway : 각 VLAN `.254`
 - 게이트웨이 이중화를 통해 Active 장비 장애 시 Standby 장비로 전환
 
 ### OSPF / ECMP
-*(실제 장비에서는 OSPF 미지원으로 Static Routing 구성)*
 
-- 백본–Distribution 구간 OSPF 기반 동적 라우팅 구성
+*실제 장비에서는 OSPF 미지원으로 Static Routing을 사용하고, Floating Static Route와 ECMP를 적용하여 경로를 이중화했습니다.*
+
+- Backbone–Distribution 구간 OSPF 기반 동적 라우팅 구성
 - 동일 Cost 경로를 이용한 ECMP 구성
+- VLAN 네트워크를 OSPF에 광고하고 VLAN 인터페이스는 Passive Interface로 설정
 - 네트워크 경로 장애 발생 시 OSPF 재계산을 통한 우회 경로 전환 확인
 
-### RSTP
+### Rapid-PVST
 
 - Rapid-PVST 기반 L2 이중화 구성
-- VLAN 10 : DS SW2 Root
-- VLAN 20/30 : DS SW6 Root
+- VLAN 10 : DS_SW1 Root
+- VLAN 20/30 : DS_SW2 Root
+- HSRP Active 장비와 VLAN별 Root Bridge를 일치하도록 구성
 - 이중화 링크에서 발생할 수 있는 L2 Loop 방지
 
 ### VLAN / Trunk
@@ -78,24 +115,35 @@ dr_capstone/
 - VLAN 20 : Web Network
 - VLAN 30 : DB Network
 - VLAN 56 : Monitoring Network
-- Trunk 구간을 통해 장비 간 VLAN 트래픽 전달
+- Trunk 구간을 통해 장비 간 필요한 VLAN 트래픽 전달
+- 사용자 및 서버 연결 포트는 용도에 따라 Access Port로 구성
 
 ### ACL
 
 - 사용자망(VLAN 10)에서 DB 서버로의 직접 접근 차단
 - 사용자망에서 Web 서비스 HTTP/HTTPS 접근 허용
-- 사용자·Web·DB 네트워크 간 접근 범위 분리
+- 사용자 / Web / DB 네트워크 간 접근 범위 분리
 
 ### Device Configuration
 
-네트워크 장비의 세부 설정은 `network-configs/`에서 확인할 수 있습니다.
+네트워크 장비의 세부 설정은 [`network-configs/`](./network-configs/)에서 확인할 수 있습니다.
 
-> 장비 설정 파일은 프로젝트 당시 구성한 네트워크를 기반으로 정리한 설정입니다.
+> `.cfg` 파일은 OSPF 기반 네트워크 구성을 Packet Tracer에서 구현하고 검증한 설정입니다. 실제 장비에서는 OSPF를 지원하지 않아 Static Routing 기반으로 구성했습니다.
 
-- [DS SW1 Configuration](./network-configs/DS_SW1.cfg)
-- [DS SW2 Configuration](./network-configs/DS_SW2.cfg)
-- [BB SW1 Configuration](./network-configs/BB_SW1.cfg)
-- [BB SW2 Configuration](./network-configs/BB_SW2.cfg)
+#### Backbone
+
+- [BB_SW1 Configuration](./network-configs/backbone/BB_SW1.cfg)
+- [BB_SW2 Configuration](./network-configs/backbone/BB_SW2.cfg)
+
+#### Distribution
+
+- [DS_SW1 Configuration](./network-configs/distribution/DS_SW1.cfg)
+- [DS_SW2 Configuration](./network-configs/distribution/DS_SW2.cfg)
+
+#### Access
+
+- [AS_SW1 Configuration](./network-configs/access/AS_SW1.cfg)
+- [AS_SW2 Configuration](./network-configs/access/AS_SW2.cfg)
 
 ---
 
@@ -106,11 +154,10 @@ dr_capstone/
 | 모니터링 VM | 192.168.56.10 (VLAN56) |
 | 서비스 서버 | 192.168.20.20 (VLAN20) |
 | DB 서버 | 192.168.30.30 (VLAN30) |
-| DS SW1 | 192.168.60.1 |
-| DS SW2 | 192.168.60.2 (Primary Active) |
+| DS_SW1 | 192.168.60.1 |
+| DS_SW2 | 192.168.60.2 |
 | AWS Wiki.js | 172.31.32.43 |
 | 내부 도메인 | service.local |
-| SSH 키 경로 | /home/admin/.ssh/service_key |
 
 ---
 
@@ -118,7 +165,7 @@ dr_capstone/
 
 ### 1. 스크립트 배포
 
-```bash
+```bash id="doh4ft"
 sudo cp scripts/check_onprem_status.sh /usr/local/bin/
 sudo cp scripts/change_dns_to_aws.sh /usr/local/bin/
 sudo cp scripts/change_dns_to_onprem.sh /usr/local/bin/
@@ -130,7 +177,7 @@ sudo chmod +x /usr/local/bin/change_dns_to_onprem.sh
 
 ### 2. dnsmasq 설정
 
-```bash
+```bash id="mv56qs"
 sudo apt install -y dnsmasq
 sudo cp config/dnsmasq/internal.conf /etc/dnsmasq.d/
 
@@ -142,7 +189,7 @@ sudo systemctl restart dnsmasq
 
 ### 3. 로그 파일 권한 설정
 
-```bash
+```bash id="09emcg"
 sudo touch /var/log/dr_check.log
 sudo chmod 666 /var/log/dr_check.log
 ```
@@ -151,7 +198,7 @@ sudo chmod 666 /var/log/dr_check.log
 
 약 30초 간격으로 온프레미스 상태 확인 스크립트를 실행합니다.
 
-```bash
+```bash id="r9i01h"
 crontab -e
 
 # 아래 두 줄 추가
@@ -161,7 +208,7 @@ crontab -e
 
 ### 5. Prometheus + Blackbox Exporter 실행
 
-```bash
+```bash id="b4agj1"
 mkdir -p ~/monitoring
 cp monitoring/docker-compose.yml ~/monitoring/
 cp monitoring/prometheus.yml ~/monitoring/
@@ -172,7 +219,7 @@ docker compose up -d
 
 ### 6. Node.js 로그 API 실행
 
-```bash
+```bash id="17dqf3"
 mkdir -p ~/log-api
 cp log-api/server.js ~/log-api/
 
@@ -182,7 +229,7 @@ nohup node server.js &
 
 ### 7. React 대시보드 실행
 
-```bash
+```bash id="6phmve"
 mkdir -p ~/dr-monitoring
 cp -r react-ui/* ~/dr-monitoring/
 
@@ -195,31 +242,84 @@ npm run dev
 
 ## 동작 흐름
 
-```text
+```text id="vczuj6"
 상태 확인 스크립트 (약 30초 간격)
-  └→ check_onprem_status.sh
-       ├→ DS SW1/SW2 ICMP 상태 확인
-       ├→ Wiki.js HTTP 상태 확인
-       ├→ PostgreSQL TCP 상태 확인
-       ├→ 장애 감지 시 change_dns_to_aws.sh 호출
-       └→ 복구 감지 시 change_dns_to_onprem.sh 호출
+ └→ check_onprem_status.sh
+      ├→ DS_SW1 / DS_SW2 ICMP 상태 확인
+      ├→ Wiki.js HTTP 상태 확인
+      ├→ PostgreSQL TCP 상태 확인
+      ├→ 장애 감지 시 change_dns_to_aws.sh 호출
+      └→ 복구 감지 시 change_dns_to_onprem.sh 호출
 
 
 Prometheus (15초 간격)
-  └→ Blackbox Exporter
-       ├→ Network Device : ICMP
-       ├→ Wiki.js        : HTTP
-       └→ PostgreSQL     : TCP
+ └→ Blackbox Exporter
+      ├→ Network Device : ICMP
+      ├→ Wiki.js        : HTTP
+      └→ PostgreSQL     : TCP
 
 
 Node.js API (Port 3001)
-  ├→ GET /logs → 장애 감지 로그 반환
-  └→ GET /dns  → 현재 DNS 상태 반환
-                  (On-Premise / AWS)
+ ├→ GET /logs → 장애 감지 로그 반환
+ └→ GET /dns  → 현재 DNS 상태 반환
+                (On-Premise / AWS)
 
 
 React Dashboard (Port 5173)
-  ├→ Prometheus API 폴링
-  ├→ Node.js API 폴링
-  └→ 네트워크 및 서비스 상태 시각화
+ ├→ Prometheus API 폴링
+ ├→ Node.js API 폴링
+ └→ 네트워크 및 서비스 상태 시각화
 ```
+
+---
+
+## DR 동작
+
+```text id="t7wj0g"
+[정상 상태]
+
+User
+  ↓
+On-Premise Wiki.js
+  ↓
+PostgreSQL
+
+
+[장애 감지]
+
+Monitoring VM
+  ├→ Network Device ICMP
+  ├→ Wiki.js HTTP
+  └→ PostgreSQL TCP
+          ↓
+      장애 판단
+          ↓
+      DNS Failover
+          ↓
+      AWS Wiki.js
+
+
+[복구]
+
+On-Premise 서비스 정상화
+          ↓
+      복구 감지
+          ↓
+      DNS 원복
+          ↓
+On-Premise Wiki.js
+```
+
+---
+
+## 구현 결과
+
+![Monitoring Dashboard](./docs/dashboard.png)
+
+- 네트워크 장비 ICMP 상태 모니터링
+- Wiki.js HTTP 상태 모니터링
+- PostgreSQL TCP 상태 모니터링
+- 장애 발생 및 복구 이벤트 로그 확인
+- 현재 On-Premise / AWS DNS 전환 상태 확인
+- 장애 발생 시 AWS DR 환경으로 서비스 전환
+- 온프레미스 복구 확인 후 기존 서비스 환경으로 자동 원복
