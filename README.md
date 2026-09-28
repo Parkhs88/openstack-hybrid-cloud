@@ -6,7 +6,9 @@
 
 ## Architecture
 
-![Architecture](./docs/architecture.png)
+<p align="center">
+  <img src="./docs/architecture.png" width="650">
+</p>
 
 - User / Web / DB / Monitoring 영역을 VLAN으로 분리
 - HSRP, OSPF, Rapid-PVST를 이용한 네트워크 이중화 구성
