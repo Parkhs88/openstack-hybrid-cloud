@@ -59,6 +59,7 @@ dr_capstone/
 - 게이트웨이 이중화를 통해 Active 장비 장애 시 Standby 장비로 전환
 
 ### OSPF / ECMP
+*(실제 장비에서는 OSPF 미지원으로 Static Routing 구성)*
 
 - 백본–Distribution 구간 OSPF 기반 동적 라우팅 구성
 - 동일 Cost 경로를 이용한 ECMP 구성
