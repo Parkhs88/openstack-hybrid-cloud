@@ -7,7 +7,7 @@
 ## Architecture
 
 <p align="center">
-  <img src="./docs/architecture.png" width="650">
+  <img src="./docs/architecture.png" width="500">
 </p>
 
 - User / Web / DB / Monitoring 영역을 VLAN으로 분리
