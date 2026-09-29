@@ -222,7 +222,7 @@ openstack-hybrid-cloud/
 │
 ├── log-api/                 # 장애 로그 및 DNS 상태 API
 ├── monitoring/              # Prometheus / Blackbox Exporter
-├── network-configs/         # Packet Tracer 네트워크 설정
+├── network-configs/         # 네트워크 장비 설정 및 검증 파일
 ├── react-ui/                # 모니터링 웹 대시보드
 ├── scripts/                 # 장애 감지 및 DR 자동 전환
 ├── services/                # On-Premise / AWS 서비스 구성
