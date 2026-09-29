@@ -74,8 +74,7 @@
 
 실제 장비 환경에서는 Static Routing을 적용했으며, OSPF 기반 동적 라우팅 구조는 Packet Tracer에서 별도로 구성하여 경로 학습 및 장애 발생 시 경로 전환을 검증했습니다.
 
-> Packet Tracer에서 구성한 OSPF 장비 설정은 [`network-configs/`](https://github.com/Parkhs88/openstack-hybrid-cloud/tree/main/network-configs)에서 확인할 수 있습니다.
-
+> Packet Tracer에서 구성·검증한 네트워크 장비 설정은 [`network-configs/`](https://github.com/Parkhs88/openstack-hybrid-cloud/tree/main/network-configs)에서 확인할 수 있습니다.
 ---
 
 ## Monitoring & DR
