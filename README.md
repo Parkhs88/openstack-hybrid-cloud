@@ -186,10 +186,10 @@ React Dashboard
 
 | 장비 | 모델 | 역할 |
 |---|---|---|
-| BB_SW1 | Cisco Catalyst 3065X | Backbone L3 Switch |
-| BB_SW2 | Cisco Catalyst 3065X | Backbone L3 Switch |
-| DS_SW1 | Cisco Catalyst 3065 | Distribution L3 Switch |
-| DS_SW2 | Cisco Catalyst 3065G | Distribution L3 Switch |
+| BB_SW1 | Cisco Catalyst 3560X | Backbone L3 Switch |
+| BB_SW2 | Cisco Catalyst 3560X | Backbone L3 Switch |
+| DS_SW1 | Cisco Catalyst 3560 | Distribution L3 Switch |
+| DS_SW2 | Cisco Catalyst 3560G | Distribution L3 Switch |
 | AS_SW | Cisco Catalyst 2950 | Access L2 Switch |
 
 ---
